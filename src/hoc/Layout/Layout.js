@@ -17,19 +17,27 @@ class Layout extends Component {
 		showCompleted: true
 	};
 
+	dataHandler = () =>
+		localStorage.setItem("todos", JSON.stringify(this.state));
+
 	checkboxHandler = todo => {
-		this.setState({
-			tasks: this.state.tasks.map(item =>
-				item.action === todo.action ? {...item, done: !item.done} : item
-			)
-		});
+		this.setState(
+			{
+				tasks: this.state.tasks.map(item =>
+					item.action === todo.action
+						? {...item, done: !item.done}
+						: item
+				)
+			},
+			this.dataHandler
+		);
 	};
 
 	todoDeleteHandler = todo => {
 		const updatedTasks = this.state.tasks.filter(
 			item => item.action !== todo.action
 		);
-		this.setState({tasks: updatedTasks});
+		this.setState({tasks: updatedTasks}, this.dataHandler);
 	};
 
 	inputTaskHandler = event => {
@@ -44,13 +52,16 @@ class Layout extends Component {
 			) &&
 			this.state.newTask !== ""
 		) {
-			this.setState({
-				tasks: [
-					...this.state.tasks,
-					{action: this.state.newTask, done: false}
-				],
-				newTask: ""
-			});
+			this.setState(
+				{
+					tasks: [
+						...this.state.tasks,
+						{action: this.state.newTask, done: false}
+					],
+					newTask: ""
+				},
+				this.dataHandler
+			);
 		}
 	};
 
@@ -58,6 +69,24 @@ class Layout extends Component {
 		this.setState({showCompleted: !this.state.showCompleted});
 	};
 
+	componentDidMount = () => {
+		let data = localStorage.getItem("todos");
+		this.setState(
+			data != null
+				? JSON.parse(data)
+				: {
+						tasks: [
+							{action: "Buy flowers", done: true},
+							{action: "Doing homework", done: true},
+							{action: "Cleaning", done: false},
+							{action: "Laundry", done: false},
+							{action: "Sleep", done: false}
+						],
+						newTask: "",
+						showCompleted: true
+				  }
+		);
+	};
 	render() {
 		return (
 			<Ax>
