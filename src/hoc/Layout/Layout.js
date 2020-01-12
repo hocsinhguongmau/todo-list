@@ -1,5 +1,8 @@
 import React, {Component} from "react";
 import Ax from "../Ax/Ax";
+import {Title, SmallTitle} from "../../components/Title/Title";
+import AddTodo from "../../components/AddTodo/AddTodo";
+import TodoRow from "../../components/TodoRow/TodoRow";
 
 class Layout extends Component {
 	state = {
@@ -11,7 +14,7 @@ class Layout extends Component {
 			{action: "Sleep", done: false}
 		],
 		newTask: "",
-		showCompleted: false
+		showCompleted: true
 	};
 
 	checkboxHandler = todo => {
@@ -58,24 +61,13 @@ class Layout extends Component {
 	render() {
 		return (
 			<Ax>
-				<h1 className="Title">
-					Todo list (
-					{this.state.tasks.filter(task => !task.done).length}{" "}
-					{this.state.tasks.filter(task => !task.done).length > 1
-						? "items"
-						: "item"}{" "}
-					to do)
-				</h1>
+				<Title tasks={this.state.tasks} />
 				<div className="Display">
-					<div className="AddTodo">
-						<form action="" onSubmit={this.addTaskHandler}>
-							<input
-								type="text"
-								onChange={this.inputTaskHandler}
-							/>
-							<button type="submit">Add</button>
-						</form>
-					</div>
+					<AddTodo
+						submitted={this.addTaskHandler}
+						changed={this.inputTaskHandler}
+						values={this.state.newTask}
+					/>
 					<div className="List Todo">
 						{this.state.tasks.filter(task => !task.done).length >
 							0 && (
@@ -90,44 +82,23 @@ class Layout extends Component {
 								<tbody>
 									{this.state.tasks
 										.filter(item => item.done === false)
-										.map((item, index) => (
-											<tr key={`task-${index}`}>
-												<td>{item.action}</td>
-												<td>
-													<input
-														type="checkbox"
-														onChange={() =>
-															this.checkboxHandler(
-																item
-															)
-														}
-														checked={item.done}
-													/>
-												</td>
-												<td>
-													<button
-														className="Delete"
-														onClick={() =>
-															this.todoDeleteHandler(
-																item
-															)
-														}
-													></button>
-												</td>
-											</tr>
+										.map(item => (
+											<TodoRow
+												key={item.action}
+												items={item}
+												checked={this.checkboxHandler}
+												deleted={this.todoDeleteHandler}
+												deleteBtn={true}
+											/>
 										))}
 								</tbody>
 							</table>
 						)}
 					</div>
-					<p className="SmallTitle">
-						<input
-							type="checkbox"
-							checked={this.state.showCompleted}
-							onChange={this.toggleCompletedHandler}
-						/>
-						Show completed tasks
-					</p>
+					<SmallTitle
+						toggled={this.toggleCompletedHandler}
+						showCompleted={this.state.showCompleted}
+					/>
 					{this.state.showCompleted && (
 						<div className="List Completed">
 							<table>
@@ -141,20 +112,13 @@ class Layout extends Component {
 									{this.state.tasks
 										.filter(item => item.done === true)
 										.map((item, index) => (
-											<tr key={`task-${index}`}>
-												<td>{item.action}</td>
-												<td>
-													<input
-														type="checkbox"
-														onChange={() =>
-															this.checkboxHandler(
-																item
-															)
-														}
-														checked={item.done}
-													/>
-												</td>
-											</tr>
+											<TodoRow
+												key={item.action}
+												items={item}
+												checked={this.checkboxHandler}
+												deleted={this.todoDeleteHandler}
+												deleteBtn={false}
+											/>
 										))}
 								</tbody>
 							</table>
