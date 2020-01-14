@@ -18,7 +18,7 @@ class Layout extends Component {
 	};
 
 	dataHandler = () =>
-		localStorage.setItem("todos", JSON.stringify(this.state));
+		sessionStorage.setItem("todos", JSON.stringify(this.state));
 
 	checkboxHandler = todo => {
 		this.setState(
@@ -70,7 +70,7 @@ class Layout extends Component {
 	};
 
 	componentDidMount = () => {
-		let data = localStorage.getItem("todos");
+		let data = sessionStorage.getItem("todos");
 		this.setState(
 			data != null
 				? JSON.parse(data)
